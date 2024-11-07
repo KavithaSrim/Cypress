@@ -1,0 +1,20 @@
+{
+    "fields": {
+		"project": {
+            "key": "COST"
+        },
+        "description": "Automated Test", 
+		"summary": "Automated Test",		
+        "labels": [
+            "SystemTeam"
+        ],
+        "components" : [
+            {
+            "name":"cDaas"
+            }
+        ],
+		"customfield_12725":{
+			"value":"System Team"
+		}
+    }
+}
