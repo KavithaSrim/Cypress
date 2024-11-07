@@ -1,0 +1,56 @@
+name: cdaas portal e2e tests
+on: 
+  workflow_dispatch:
+  # Triggers the workflow on push or pull request events but only for the "Main" branch
+ # push:
+ #  branches: [ "Main" ]    
+ # schedule:
+    # Runs "minute, hour, day of the month, month, day of the week" 
+  #  - cron: '0 18 * * 3'
+
+   # Allows you to run this workflow manually from the Actions tab
+   # workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: [ec2, windows, medium]
+
+# Steps represent a sequence of tasks that will be executed as part of the job
+    steps:        
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it      
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{secrets.PAT}}
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3 
+        with:
+          node-version: 20 
+
+      - name: Install NPM dependencies
+        run: npm ci
+                      
+      - name: Run Cypress tests
+        run: npm run test
+           
+      - name: Upload Mochawesome HTML Report as an artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: mochawesome-html-report
+          path: Cypress/reports/mochareports/report.html
+
+      - name: Upload Mochawesome JSON files as artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: mochawesome-junit-report
+          path: Cypress/reports/junit/combined-report.xml
+
+       # Import 
+      - name: Submit results to Xray        
+        run: |
+            curl.exe -v -X POST -H "Content-Type: multipart/form-data" -H "Authorization: Bearer ${{ secrets.JIRA_TOKEN }}" -F "file=@Cypress/reports/junit/combined-report.xml" -F "info=@testExec.json" -F "testInfo=@testCase.json" https://jira.atlassian.teliacompany.net/rest/raven/1.0/import/execution/junit/multipart
+        shell: powershell
