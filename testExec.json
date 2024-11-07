@@ -1,0 +1,22 @@
+{
+    "fields": {
+        "project": {
+            "key": "COST"
+        },
+        "summary": "Test Execution for junit Execution",
+        "issuetype": {
+            "name": "Test Execution [XRAY]"
+        },
+        "components" : [
+            {
+            "name":"aws"
+            },
+            {
+            "name":"cDaas"
+            }
+        ],
+		"customfield_12725":{
+			"value":"System Team"
+		}
+    }
+}
